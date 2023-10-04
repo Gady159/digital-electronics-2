@@ -16,7 +16,7 @@
                         // is connected
 #define SHORT_DELAY 250 // Delay in milliseconds
 #ifndef F_CPU
-#define F_CPU 16000000 // CPU frequency in Hz required for delay funcs
+#define F_CPU 16000000  // CPU frequency in Hz required for delay funcs
 #endif
 
 /* Includes ----------------------------------------------------------*/
