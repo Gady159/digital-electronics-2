@@ -48,13 +48,23 @@ int main(void)
     lcd_init(LCD_DISP_ON_CURSOR_BLINK);
 
     // Put string(s) on LCD screen
-    lcd_gotoxy(6, 1);
-    lcd_puts("LCD Test");
-    lcd_putc('!');
+    lcd_gotoxy(0, 0);
+    lcd_puts("00:00.0");
+
+    lcd_gotoxy(11, 0);
+    lcd_putc('a');
+
+    lcd_gotoxy(0, 1);
+    lcd_putc('b');
+
+    lcd_gotoxy(11, 1);
+    lcd_putc('c');
 
     // Configuration of 8-bit Timer/Counter2 for Stopwatch update
     // Set the overflow prescaler to 16 ms and enable interrupt
 
+    TIM2_OVF_16384US
+    TIM2_OVF_ENABLE
 
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -81,21 +91,68 @@ ISR(TIMER2_OVF_vect)
 {
     static uint8_t no_of_overflows = 0;
     static uint8_t tenths = 0;  // Tenths of a second
+    static uint8_t seconds = 0;  // Seconds
+    static uint16_t s_seconds = 0;  // Square_Seconds
+    static uint8_t minutes = 0;  // Minutes
     char string[2];             // String for converted numbers by itoa()
-
+    
     no_of_overflows++;
-    if (no_of_overflows >= 6)
+
+    if (no_of_overflows >= 6) // Do this every 6 x 16 ms = 100 ms
     {
-        // Do this every 6 x 16 ms = 100 ms
         no_of_overflows = 0;
+        
+        tenths++;
 
-        // Count tenth of seconds 0, 1, ..., 9, 0, 1, ...
+        if (tenths>9){
+          tenths=0;
+          seconds++;
 
+          if(seconds>59){
+            seconds=0;
+            minutes++;
+            lcd_gotoxy(3, 0);
+            lcd_putc('0');
 
-        itoa(tenths, string, 10);  // Convert decimal value to string
-        // Display "00:00.tenths"
-        lcd_gotoxy(7, 0);
-        lcd_puts(string);
+            if(minutes>59){
+              minutes=0;
+              lcd_gotoxy(0, 0);
+              lcd_putc('0');
+            }
+          }
+        }
     }
+
+    itoa(minutes, string, 10);
+    if(minutes<=9){
+      lcd_gotoxy(1, 0);
+      lcd_puts(string);
+    }
+    else{
+      lcd_gotoxy(0, 0);
+      lcd_puts(string);
+    }
+
+    itoa(seconds, string, 10);
+    if(seconds<=9){
+      lcd_gotoxy(4, 0);
+      lcd_puts(string);
+    }
+    else{
+      lcd_gotoxy(3, 0);
+      lcd_puts(string);
+    }
+  
+    itoa(tenths, string, 10);
+    lcd_gotoxy(6, 0);
+    lcd_puts(string);
+
+    s_seconds = seconds*seconds;
+
+    itoa(s_seconds, string, 10);
+    lcd_gotoxy(11, 0);
+    lcd_puts(string);
     // Else do nothing and exit the ISR
 }
+
+
