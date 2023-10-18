@@ -37,11 +37,11 @@ The purpose of the laboratory exercise is to understand the serial control of Hi
    | **LCD signal(s)** | **AVR pin(s)** | **Description** |
    | :-: | :-: | :-- |
    | RS | PB0 | Register selection signal. Selection between Instruction register (RS=0) and Data register (RS=1) |
-   | R/W |  |  |
-   | E |  |  |
-   | D[3:0] |  |  |
-   | D[7:4] |  |  |
-   | K |  |  |
+   | R/W | GND | Read/Write |
+   | E | PB1 | Enable. This loads the data into the HD44780 on the falling edge |
+   | D[3:0] | 7:10 | Ommited |
+   | D[7:4] | PD[11:14] | DATA PINS |
+   | K | 15:16 | Back-light cathode |
 
 2. What is the ASCII table? What are the codes/values for uppercase letters `A` to `E`, lowercase letters `a` to `e`, and numbers `0` to `4` in this table?
 
